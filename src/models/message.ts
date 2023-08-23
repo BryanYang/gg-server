@@ -1,7 +1,7 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: 'users' })
-export class User extends Model<User> {
+@Table({ tableName: 'messages' })
+export class Message extends Model<Message> {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true, // 设置为主键
@@ -13,35 +13,29 @@ export class User extends Model<User> {
     type: DataType.STRING,
     allowNull: false,
   })
-  username: string;
+  userID: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  email: string;
+  description: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  password: string;
+  templateID: number;
 
   @Column({
-    type: DataType.STRING,
-    allowNull: true,
+    type: DataType.TINYINT,
+    allowNull: false,
   })
-  class: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  avatar: string;
+  state: number;
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
-  isTeacher: boolean;
+  isDeleted: boolean;
 }

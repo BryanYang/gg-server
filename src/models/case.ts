@@ -1,7 +1,8 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import { Exercise } from './exercise';
 
-@Table({ tableName: 'users' })
-export class User extends Model<User> {
+@Table({ tableName: 'cases' })
+export class Case extends Model<Case> {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true, // 设置为主键
@@ -13,35 +14,38 @@ export class User extends Model<User> {
     type: DataType.STRING,
     allowNull: false,
   })
-  username: string;
+  title: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  email: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  password: string;
+  description: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  class: string;
+  videoUrl: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  avatar: string;
+  link: string;
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
-  isTeacher: boolean;
+  isDeleted: boolean;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  studyCount: number;
+
+  @HasMany(() => Exercise) // 定义一对多关系
+  exercises: Exercise[];
 }
