@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { databaseConfig } from '../config/db'; // 导入数据库配置
-import { User } from '../models/user'; // 导入 User 模型
+import { User } from '../user/users.model'; // 导入 User 模型
 
 async function createTables() {
   const sequelize = new Sequelize(databaseConfig.uri); // 创建 Sequelize 实例
