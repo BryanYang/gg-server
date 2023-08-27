@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
 import { Exercise } from './exercise';
+import { CaseStudy } from './case-study';
 
 @Table({ tableName: 'cases' })
 export class Case extends Model<Case> {
@@ -21,6 +22,12 @@ export class Case extends Model<Case> {
     allowNull: false,
   })
   description: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  pic: string;
 
   @Column({
     type: DataType.STRING,
@@ -48,4 +55,7 @@ export class Case extends Model<Case> {
 
   @HasMany(() => Exercise) // 定义一对多关系
   exercises: Exercise[];
+
+  @HasMany(() => CaseStudy) // 定义一对多关系
+  caseStudies: CaseStudy[];
 }

@@ -1,4 +1,12 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
+import { Exercise } from './exercise';
 
 @Table({ tableName: 'exercise_options' })
 export class ExerciseOption extends Model<ExerciseOption> {
@@ -14,4 +22,15 @@ export class ExerciseOption extends Model<ExerciseOption> {
     allowNull: false,
   })
   description: string;
+
+  @ForeignKey(() => Exercise)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    field: 'exercise_id',
+  })
+  exerciseID: number;
+
+  @BelongsTo(() => Exercise)
+  exercise: Exercise;
 }
