@@ -39,25 +39,25 @@ export class CaseStudy extends Model<CaseStudy> {
   user: User;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.DATE,
     allowNull: true,
   })
-  startDate: number;
+  startDate: Date;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.DATE,
     allowNull: true,
   })
-  endDate: number;
+  endDate: Date;
 
   @Column({
-    type: DataType.TINYINT,
+    type: DataType.SMALLINT,
     allowNull: false,
   })
   state: number;
 
   @Column({
-    type: DataType.TINYINT,
+    type: DataType.SMALLINT,
     allowNull: true,
   })
   currentStep: number;

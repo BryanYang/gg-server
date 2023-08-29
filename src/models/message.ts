@@ -28,7 +28,7 @@ export class Message extends Model<Message> {
   templateID: number;
 
   @Column({
-    type: DataType.TINYINT,
+    type: DataType.SMALLINT,
     allowNull: false,
   })
   state: number;

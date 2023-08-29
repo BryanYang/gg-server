@@ -5,6 +5,7 @@ import { Case } from '../models/case';
 import { Exercise } from '../models/exercise';
 import { ExerciseOption } from '../models/exercise-option';
 import { Institution } from '../models/institution';
+import { CaseStudy } from '../models/case-study';
 
 async function createTables() {
   const sequelize = new Sequelize(databaseConfig.uri); // 创建 Sequelize 实例
@@ -15,6 +16,7 @@ async function createTables() {
     ExerciseOption,
     Exercise,
     Case,
+    CaseStudy,
     Institution,
   ]);
   await sequelize.sync({ force: false }); // 根据模型创建表，force: true 表示删除已存在的表

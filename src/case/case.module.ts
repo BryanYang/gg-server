@@ -5,8 +5,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Case } from '../models/case';
 import { ExerciseOption } from '../models/exercise-option';
 import { Exercise } from '../models/exercise';
-import { Institution } from 'src/models/institution';
-import { CaseStudy } from 'src/models/case-study';
+import { Institution } from '../models/institution';
+import { CaseStudy } from '../models/case-study';
 
 @Module({
   imports: [
