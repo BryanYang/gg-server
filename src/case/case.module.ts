@@ -7,6 +7,7 @@ import { ExerciseOption } from '../models/exercise-option';
 import { Exercise } from '../models/exercise';
 import { Institution } from '../models/institution';
 import { CaseStudy } from '../models/case-study';
+import { UserAnswer } from 'src/models/user-answer';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CaseStudy } from '../models/case-study';
       ExerciseOption,
       Institution,
       CaseStudy,
+      UserAnswer,
     ]),
   ],
   controllers: [CaseController],

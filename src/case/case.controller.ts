@@ -1,8 +1,17 @@
-import { Controller, UseGuards, Get, Param, Put, Body } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Param,
+  Put,
+  Body,
+  Request,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Case } from 'src/models/case';
 import { CaseService } from './case.service';
 import { CaseStudy } from 'src/models/case-study';
+import { UserAnswer } from 'src/models/user-answer';
 
 @Controller('cases')
 @UseGuards(AuthGuard)
@@ -29,5 +38,17 @@ export class CaseController {
   @Put('study')
   async updateStudy(@Body() data: Partial<CaseStudy>): Promise<CaseStudy> {
     return this.caseService.updateStudy(data);
+  }
+
+  @Put('study/answer')
+  async createOrUpdateAnswer(
+    @Body() data: Partial<UserAnswer>,
+  ): Promise<number> {
+    return this.caseService.createAnswer(data);
+  }
+
+  @Get('study/:studyID/answer')
+  async getAnswer(@Param() params: { studyID: number }): Promise<UserAnswer[]> {
+    return this.caseService.getAnswer(params.studyID);
   }
 }

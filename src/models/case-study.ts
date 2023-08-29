@@ -63,6 +63,12 @@ export class CaseStudy extends Model<CaseStudy> {
   currentStep: number;
 
   @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  summary: string;
+
+  @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })

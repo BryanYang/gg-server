@@ -5,12 +5,14 @@ import { Exercise } from '../models/exercise';
 import { ExerciseOption } from '../models/exercise-option';
 import { Institution } from '../models/institution';
 import { CaseStudy } from '../models/case-study';
+import { UserAnswer } from 'src/models/user-answer';
 
 @Injectable()
 export class CaseService {
   constructor(
     @InjectModel(Case) private caseModel: typeof Case,
     @InjectModel(CaseStudy) private caseStudyModel: typeof CaseStudy,
+    @InjectModel(UserAnswer) private userAnswerModel: typeof UserAnswer,
   ) {}
 
   async findAll(): Promise<Case[]> {
@@ -56,5 +58,24 @@ export class CaseService {
       throw new HttpException('未找到该案例', HttpStatus.BAD_REQUEST);
     }
     return study.update(data);
+  }
+
+  async createAnswer(data: Partial<UserAnswer>): Promise<number> {
+    await this.userAnswerModel.destroy({
+      where: {
+        caseStudyID: data.caseStudyID,
+        exerciseID: data.exerciseID,
+      },
+    });
+    const answer = await this.userAnswerModel.create(data);
+    return answer.id;
+  }
+
+  async getAnswer(studyId): Promise<UserAnswer[]> {
+    return await this.userAnswerModel.findAll({
+      where: {
+        caseStudyID: studyId,
+      },
+    });
   }
 }
