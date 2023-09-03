@@ -78,4 +78,13 @@ export class CaseService {
       },
     });
   }
+
+  async getStudies(userID): Promise<CaseStudy[]> {
+    return this.caseStudyModel.findAll({
+      where: {
+        userID,
+      },
+      include: [Case],
+    });
+  }
 }

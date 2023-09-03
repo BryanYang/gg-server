@@ -51,4 +51,9 @@ export class CaseController {
   async getAnswer(@Param() params: { studyID: number }): Promise<UserAnswer[]> {
     return this.caseService.getAnswer(params.studyID);
   }
+
+  @Get('study/list')
+  async getStudies(@Request() req): Promise<CaseStudy[]> {
+    return this.caseService.getStudies(req.user.id);
+  }
 }
