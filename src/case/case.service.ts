@@ -71,6 +71,14 @@ export class CaseService {
     return answer.id;
   }
 
+  async removeAnswer(id: number): Promise<void> {
+    await this.userAnswerModel.destroy({
+      where: {
+        caseStudyID: id,
+      },
+    });
+  }
+
   async getAnswer(studyId): Promise<UserAnswer[]> {
     return await this.userAnswerModel.findAll({
       where: {

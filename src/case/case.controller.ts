@@ -6,6 +6,7 @@ import {
   Put,
   Body,
   Request,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Case } from 'src/models/case';
@@ -38,6 +39,11 @@ export class CaseController {
   @Put('study')
   async updateStudy(@Body() data: Partial<CaseStudy>): Promise<CaseStudy> {
     return this.caseService.updateStudy(data);
+  }
+
+  @Delete('study/:caseStudyID')
+  async destroyAnswer(@Param() params: { caseStudyID: number }): Promise<void> {
+    return this.caseService.removeAnswer(params.caseStudyID);
   }
 
   @Put('study/answer')
