@@ -6,6 +6,6 @@ export const databaseConfig = {
   password: '123123',
   database: 'gg',
   autoLoadModels: true, // 自动加载模型
-  // uri: 'postgres://yang:123123@198.23.188.188:5432/gg',
+  // uri: 'postgres://root:123123@198.23.188.188:5432/gg',
   uri: 'postgres://gg:123123@localhost:5432/gg',
 };

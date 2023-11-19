@@ -10,7 +10,7 @@ REMOTE_PATH="/root/tmp"
 
 echo "开始上传"
 # 使用SSH密钥对进行身份验证，无需密码
-scp -f dist.zip root@$SERVER_IP:$REMOTE_PATH
+scp -vf dist.zip root@$SERVER_IP:$REMOTE_PATH
 
 # 清理临时文件
 rm dist.zip
