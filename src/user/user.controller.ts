@@ -29,6 +29,17 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('teachers')
+  @UseGuards(RolesGuard)
+  @Roles('teacher')
+  async findAllTeachers(): Promise<UserDto[]> {
+    return this.userService.findAll({
+      where: {
+        isTeacher: true,
+      },
+    });
+  }
+
   @Get('profile')
   async findById(@Request() request): Promise<UserDto | null> {
     return convertToUserDTO(await this.userService.findById(request.user.id));

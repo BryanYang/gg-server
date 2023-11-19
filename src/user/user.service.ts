@@ -4,13 +4,14 @@ import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt';
 import { User } from '../models/user';
 import { UserDto, convertToUserDTO } from '../dto/user';
+import { FindOptions } from 'sequelize';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User) private userModel: typeof User) {}
 
-  async findAll(): Promise<UserDto[]> {
-    const users = await this.userModel.findAll();
+  async findAll(where?: FindOptions<User>): Promise<UserDto[]> {
+    const users = await this.userModel.findAll(where);
     return map(users, convertToUserDTO);
   }
 
