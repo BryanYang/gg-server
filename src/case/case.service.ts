@@ -6,11 +6,16 @@ import { ExerciseOption } from '../models/exercise-option';
 import { Institution } from '../models/institution';
 import { CaseStudy } from '../models/case-study';
 import { UserAnswer } from 'src/models/user-answer';
+import { map, omit } from 'lodash';
 
 @Injectable()
 export class CaseService {
   constructor(
     @InjectModel(Case) private caseModel: typeof Case,
+    @InjectModel(Institution) private institutionModal: typeof Institution,
+    @InjectModel(Exercise) private exerciseModal: typeof Exercise,
+    @InjectModel(ExerciseOption)
+    private exerciseOptionModal: typeof ExerciseOption,
     @InjectModel(CaseStudy) private caseStudyModel: typeof CaseStudy,
     @InjectModel(UserAnswer) private userAnswerModel: typeof UserAnswer,
   ) {}
@@ -33,8 +38,67 @@ export class CaseService {
             },
           ],
         },
+        {
+          model: Institution,
+        },
       ],
     });
+  }
+
+  async create(data: Partial<Case>): Promise<Case | null> {
+    if (data.id) {
+      const it = await this.caseModel.findByPk(data.id);
+      return await it.update(data);
+    }
+    return await this.caseModel.create({ status: 0, ...data });
+  }
+
+  async createIns(data: Partial<Institution>[]): Promise<Institution[]> {
+    return await Promise.all(
+      map(data, async (record: Partial<Institution>) => {
+        if (record.id) {
+          const it = await this.institutionModal.findByPk(record.id);
+          return await it.update(record);
+        }
+        return this.institutionModal.create(record);
+      }),
+    );
+  }
+
+  async createExercise(
+    data: Partial<Exercise> & {
+      optionList?: { description: string; id?: number }[];
+    },
+  ): Promise<Exercise | null> {
+    let res: Exercise | null = null;
+    if (data.id) {
+      const it = await this.exerciseModal.findByPk(data.id);
+      res = await it.update(omit(data, 'optionList'));
+    } else {
+      res = await this.exerciseModal.create(omit(data, ['optionList']));
+    }
+    if (data.optionList) {
+      await this.exerciseOptionModal.destroy({
+        where: { exerciseID: res.id },
+      });
+      await this.exerciseOptionModal.bulkCreate(
+        data.optionList.map((op) => ({
+          description: op.description,
+          exerciseID: res.id,
+        })),
+      );
+    }
+    return res;
+  }
+
+  async createExerciseOption(
+    data: Partial<ExerciseOption>,
+  ): Promise<ExerciseOption | null> {
+    if (data.id) {
+      const it = await this.exerciseOptionModal.findByPk(data.id);
+      return await it.update(data);
+    }
+    return await this.exerciseOptionModal.create(data);
   }
 
   async findStudy({

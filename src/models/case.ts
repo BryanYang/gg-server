@@ -1,6 +1,8 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
 import { Exercise } from './exercise';
 import { CaseStudy } from './case-study';
+import { DataTypes } from 'sequelize';
+import { Institution } from './institution';
 
 @Table({ tableName: 'cases' })
 export class Case extends Model<Case> {
@@ -36,6 +38,19 @@ export class Case extends Model<Case> {
   videoUrl: string;
 
   @Column({
+    type: DataTypes.ARRAY(DataType.STRING),
+    allowNull: true,
+  })
+  types: string[];
+
+  // 0 Draft 1 Ready
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  status: 0;
+
+  @Column({
     type: DataType.STRING,
     allowNull: true,
   })
@@ -58,4 +73,7 @@ export class Case extends Model<Case> {
 
   @HasMany(() => CaseStudy) // 定义一对多关系
   caseStudies: CaseStudy[];
+
+  @HasMany(() => Institution) // 定义一对多关系
+  institutions: Institution[];
 }

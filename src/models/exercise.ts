@@ -20,6 +20,13 @@ export class Exercise extends Model<Exercise> {
   })
   id: number;
 
+  /** 题型 单选/多选/问答 */
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  type: string;
+
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -53,7 +60,19 @@ export class Exercise extends Model<Exercise> {
     type: DataType.ARRAY(DataType.INTEGER),
     allowNull: false,
   })
-  answerIDs: number[];
+  answerNos: number[];
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  analysis: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  tip: string;
 
   @HasMany(() => ExerciseOption) // 定义一对多关系
   options: ExerciseOption[];

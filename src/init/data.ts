@@ -7,11 +7,10 @@ import { ExerciseOption } from '../models/exercise-option';
 import { Institution } from '../models/institution';
 import { CaseStudy } from '../models/case-study';
 import { UserAnswer } from '../models/user-answer';
+import * as bcrypt from 'bcrypt';
 
-async function createTables() {
+async function insertData() {
   const sequelize = new Sequelize(databaseConfig.uri); // 创建 Sequelize 实例
-
-  // 同步模型并自动创建数据库表
   await sequelize.addModels([
     User,
     ExerciseOption,
@@ -21,10 +20,19 @@ async function createTables() {
     Institution,
     UserAnswer,
   ]);
-  await sequelize.sync({ force: true }); // 根据模型创建表，force: true 表示删除已存在的表
-  console.log('表已创建');
+  const salt = bcrypt.genSaltSync(10);
+  await sequelize.model('User').create({
+    username: 'yang',
+    email: 'yang',
+    password: await bcrypt.hash('123123', salt),
+    isTeacher: true,
+  });
 }
 
-createTables().catch((error) => {
-  console.error('创建表时发生错误：', error);
-});
+insertData()
+  .then(() => {
+    console.log('初始数据设置成功');
+  })
+  .catch((error) => {
+    console.error('生成初始数据时发生错误：', error);
+  });

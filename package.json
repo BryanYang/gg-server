@@ -9,6 +9,7 @@
     "build": "nest build",
     "pub": "./scripts/pub.sh",
     "init:db": "npx ts-node ./src/init/db.ts",
+    "init:data": "npx ts-node ./src/init/data.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

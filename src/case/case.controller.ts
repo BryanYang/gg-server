@@ -13,6 +13,9 @@ import { Case } from 'src/models/case';
 import { CaseService } from './case.service';
 import { CaseStudy } from 'src/models/case-study';
 import { UserAnswer } from 'src/models/user-answer';
+import { Institution } from 'src/models/institution';
+import { Exercise } from 'src/models/exercise';
+import { ExerciseOption } from 'src/models/exercise-option';
 
 @Controller('cases')
 @UseGuards(AuthGuard)
@@ -39,6 +42,35 @@ export class CaseController {
   @Put('study')
   async updateStudy(@Body() data: Partial<CaseStudy>): Promise<CaseStudy> {
     return this.caseService.updateStudy(data);
+  }
+
+  @Put()
+  async create(@Body() data: Partial<Case>): Promise<Case | null> {
+    return this.caseService.create(data);
+  }
+
+  @Put('institutions')
+  async createIns(
+    @Body() data: Partial<Institution>[],
+  ): Promise<Institution[]> {
+    return this.caseService.createIns(data);
+  }
+
+  @Put('exercise')
+  async createExercise(
+    @Body()
+    data: Partial<Exercise> & {
+      optionList?: { description: string; id?: number }[];
+    },
+  ): Promise<Exercise> {
+    return this.caseService.createExercise(data);
+  }
+
+  @Put('exercise-option')
+  async createExerciseOption(
+    @Body() data: Partial<ExerciseOption>,
+  ): Promise<ExerciseOption> {
+    return this.caseService.createExerciseOption(data);
   }
 
   @Delete('study/:caseStudyID')
