@@ -40,8 +40,8 @@ export class UserAnswer extends Model<UserAnswer> {
   exercise: Exercise;
 
   @Column({
-    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    type: DataTypes.ARRAY(DataTypes.STRING),
     allowNull: false,
   })
-  answers: number[];
+  answers: string[];
 }

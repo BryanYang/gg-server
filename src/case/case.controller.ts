@@ -40,8 +40,11 @@ export class CaseController {
   }
 
   @Put('study')
-  async updateStudy(@Body() data: Partial<CaseStudy>): Promise<CaseStudy> {
-    return this.caseService.updateStudy(data);
+  async updateStudy(
+    @Body() data: Partial<CaseStudy>,
+    @Request() req,
+  ): Promise<CaseStudy> {
+    return this.caseService.updateStudy(data, req.user);
   }
 
   @Put()
@@ -76,6 +79,11 @@ export class CaseController {
   @Delete('study/:caseStudyID')
   async destroyAnswer(@Param() params: { caseStudyID: number }): Promise<void> {
     return this.caseService.removeAnswer(params.caseStudyID);
+  }
+
+  @Delete('exercise/:id')
+  async destroyExercise(@Param() params: { id: number }): Promise<void> {
+    return this.caseService.removeExercise(params.id);
   }
 
   @Put('study/answer')

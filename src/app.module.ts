@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { CaseModule } from './case/case.module';
 import { MessageModule } from './message/message.module';
 import { ClassListModule } from './class-list/class-list.module';
+import { CommunityModule } from './community/community.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ClassListModule } from './class-list/class-list.module';
     CaseModule,
     MessageModule,
     ClassListModule,
+    CommunityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

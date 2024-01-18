@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ClassList } from 'src/models/class-list';
 import { User } from 'src/models/user';
-import { map } from 'lodash';
+import { map, forEach } from 'lodash';
 import { convertToUserDTO } from 'src/dto/user';
 import { Op } from 'sequelize';
 import * as bcrypt from 'bcrypt';
@@ -15,13 +15,27 @@ export class ClassListService {
   ) {}
 
   async findAll(): Promise<ClassList[]> {
-    return await this.classListModel.findAll({
+    const res = await this.classListModel.findAll({
       where: {
         isDeleted: {
           [Op.or]: [null, false],
         },
       },
     });
+
+    const result = [];
+    await Promise.all(
+      map(res, async (c) => {
+        c.dataValues.count = await this.userModel.count({
+          where: {
+            class: String(c.id),
+          },
+        });
+        result.push(c);
+      }),
+    );
+
+    return result;
   }
 
   async create(data: Partial<ClassList>): Promise<ClassList> {

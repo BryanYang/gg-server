@@ -5,6 +5,8 @@ import {
   UseGuards,
   Get,
   Body,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
@@ -18,6 +20,12 @@ export class AuthController {
   async login(@Body() signInDto: Record<string, any>) {
     const { username, password } = signInDto;
     const user = await this.authService.validateUser(username, password);
+    if (!user) {
+      throw new HttpException(
+        'user not found or password failed',
+        HttpStatus.FORBIDDEN,
+      );
+    }
     return this.authService.login(user);
   }
 

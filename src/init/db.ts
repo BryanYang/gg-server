@@ -7,6 +7,9 @@ import { ExerciseOption } from '../models/exercise-option';
 import { Institution } from '../models/institution';
 import { CaseStudy } from '../models/case-study';
 import { UserAnswer } from '../models/user-answer';
+import { Post } from '../models/post';
+import { StarLike } from '../models/star-like';
+import { Comment } from '../models/comment';
 
 async function createTables() {
   const sequelize = new Sequelize(databaseConfig.uri); // 创建 Sequelize 实例
@@ -20,8 +23,11 @@ async function createTables() {
     CaseStudy,
     Institution,
     UserAnswer,
+    Post,
+    Comment,
+    StarLike,
   ]);
-  await sequelize.sync({ force: true }); // 根据模型创建表，force: true 表示删除已存在的表
+  await sequelize.sync({ force: false }); // 根据模型创建表，force: true 表示删除已存在的表
   console.log('表已创建');
 }
 

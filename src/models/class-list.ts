@@ -44,4 +44,6 @@ export class ClassList extends Model<ClassList> {
     allowNull: true,
   })
   isDeleted: boolean;
+
+  count?: number;
 }

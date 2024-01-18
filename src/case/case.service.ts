@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { difference } from 'lodash';
+import * as moment from 'moment';
 import { Case } from 'src/models/case';
 import { Exercise } from '../models/exercise';
 import { ExerciseOption } from '../models/exercise-option';
@@ -7,17 +9,22 @@ import { Institution } from '../models/institution';
 import { CaseStudy } from '../models/case-study';
 import { UserAnswer } from 'src/models/user-answer';
 import { map, omit } from 'lodash';
+import { User } from 'src/models/user';
+import { Post } from 'src/models/post';
+import { adminEmail } from 'src/utils/user';
 
 @Injectable()
 export class CaseService {
   constructor(
     @InjectModel(Case) private caseModel: typeof Case,
+    @InjectModel(Post) private postModel: typeof Post,
     @InjectModel(Institution) private institutionModal: typeof Institution,
     @InjectModel(Exercise) private exerciseModal: typeof Exercise,
     @InjectModel(ExerciseOption)
     private exerciseOptionModal: typeof ExerciseOption,
     @InjectModel(CaseStudy) private caseStudyModel: typeof CaseStudy,
     @InjectModel(UserAnswer) private userAnswerModel: typeof UserAnswer,
+    @InjectModel(User) private userModel: typeof User,
   ) {}
 
   async findAll(): Promise<Case[]> {
@@ -91,6 +98,14 @@ export class CaseService {
     return res;
   }
 
+  async removeExercise(id: number) {
+    const item = await this.exerciseModal.findByPk(id);
+    await this.exerciseOptionModal.destroy({ where: { exerciseID: item.id } });
+    if (item) {
+      await item.destroy();
+    }
+  }
+
   async createExerciseOption(
     data: Partial<ExerciseOption>,
   ): Promise<ExerciseOption | null> {
@@ -116,12 +131,42 @@ export class CaseService {
     });
   }
 
-  async updateStudy(data: Partial<CaseStudy>): Promise<CaseStudy> {
-    const study = await this.caseStudyModel.findByPk(data.id);
+  async updateStudy(data: Partial<CaseStudy>, user: User): Promise<CaseStudy> {
+    const study = await this.caseStudyModel.findByPk(data.id, {
+      include: [User, Case],
+    });
     if (!study) {
-      throw new HttpException('未找到该案例', HttpStatus.BAD_REQUEST);
+      await this.caseStudyModel.create({
+        currentStep: 1,
+        ...data,
+        userID: user.id,
+        state: 0,
+        startDate: new Date(),
+      });
+      return;
     }
-    return study.update(data);
+
+    // Finish, 生成post
+    if (data.currentStep === 4) {
+      const admin = await this.userModel.findOne({
+        where: {
+          email: adminEmail,
+        },
+      });
+      const time = moment().diff(moment(study.startDate), 'minute');
+      const [, sum, total] = await this.calculateScore(study.id);
+      await this.postModel.create({
+        userID: admin.id,
+        description: '',
+        image: study.case.pic,
+        title: `恭喜${study.user.username}完成了测试!`,
+        content: `用时${time}分钟; 分数 ${sum}/${total}`,
+      });
+    }
+    return study.update({
+      ...data,
+      endDate: data.currentStep === 4 ? new Date() : undefined,
+    });
   }
 
   async createAnswer(data: Partial<UserAnswer>): Promise<number> {
@@ -143,11 +188,12 @@ export class CaseService {
     });
   }
 
-  async getAnswer(studyId): Promise<UserAnswer[]> {
+  async getAnswer(studyId: number): Promise<UserAnswer[]> {
     return await this.userAnswerModel.findAll({
       where: {
         caseStudyID: studyId,
       },
+      include: [Exercise],
     });
   }
 
@@ -158,5 +204,31 @@ export class CaseService {
       },
       include: [Case],
     });
+  }
+
+  async calculateScore(
+    studyId: number,
+  ): Promise<[s: Record<number, number>, t: number, a: number]> {
+    const answers = await this.getAnswer(studyId);
+    const results = {};
+    let totalScore = 0;
+    let allScore = 0;
+    for (const i in answers) {
+      const exercise = answers[i].exercise;
+      const correctAnswerNos = exercise.answerNos;
+      const score = exercise.score;
+      const result = answers[i].answers.map(Number);
+      allScore += score;
+      if (
+        correctAnswerNos.length === result.length &&
+        difference(correctAnswerNos, result).length === 0
+      ) {
+        results[exercise.id] = score;
+        totalScore += score;
+      } else {
+        results[exercise.id] = 0;
+      }
+    }
+    return [results, totalScore, allScore];
   }
 }

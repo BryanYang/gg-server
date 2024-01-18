@@ -8,6 +8,8 @@ import { Exercise } from '../models/exercise';
 import { Institution } from '../models/institution';
 import { CaseStudy } from '../models/case-study';
 import { UserAnswer } from 'src/models/user-answer';
+import { User } from 'src/models/user';
+import { Post } from 'src/models/post';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { UserAnswer } from 'src/models/user-answer';
       Institution,
       CaseStudy,
       UserAnswer,
+      User,
+      Post,
     ]),
   ],
   controllers: [CaseController],

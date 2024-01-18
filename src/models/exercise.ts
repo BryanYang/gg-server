@@ -74,7 +74,7 @@ export class Exercise extends Model<Exercise> {
   })
   tip: string;
 
-  @HasMany(() => ExerciseOption) // 定义一对多关系
+  @HasMany(() => ExerciseOption, { onDelete: 'CASCADE' }) // 定义一对多关系
   options: ExerciseOption[];
 
   @ForeignKey(() => Case)
