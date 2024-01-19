@@ -1,10 +1,14 @@
 version: '3'
 services:
   app:
+    networks:
+      - my_network
     build:
       context: .
     ports:
       - "3000:3000"
+    environment:
+      NODE_ENV: production
     depends_on:
       - db
   db:
@@ -17,6 +21,10 @@ services:
       POSTGRES_PASSWORD: 123123
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      - my_network
 
 volumes:
   db_data:
+networks:
+  my_network:
