@@ -6,10 +6,16 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { map } from 'lodash';
 import { ClassListService } from './class-list.service';
 import { ClassList } from 'src/models/class-list';
 import { User } from 'src/models/user';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as csv from 'csvtojson';
+import { Readable } from 'stream';
 
 @Controller('class-list')
 export class ClassListController {
@@ -57,6 +63,24 @@ export class ClassListController {
     @Body() data: Partial<User>,
   ): Promise<User> {
     return this.classListService.updateUser(id, data);
+  }
+
+  @Post(':id/upload')
+  // 使用 FileInterceptor 拦截器来处理文件上传
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadUsers(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<User> {
+    const stream = Readable.from(file.buffer);
+    const res = await csv().fromStream(stream);
+    return await Promise.all(
+      map(res, async (user) => {
+        if (user.username && user.email && user.password) {
+          return await this.classListService.createUser(id, user);
+        }
+      }),
+    );
   }
 
   @Delete(':id/user/:userID')
