@@ -12,6 +12,7 @@ COPY yarn.lock ./
 # 复制项目文件到工作目录
 COPY ./dist .
 
+RUN npm config set registry http://mirrors.cloud.tencent.com/npm/
 # 安装项目依赖
 RUN npm install -g pm2
 
