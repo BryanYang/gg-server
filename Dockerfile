@@ -10,7 +10,6 @@ COPY package*.json ./
 COPY yarn.lock ./
 
 # 复制项目文件到工作目录
-RUN yarn build
 COPY ./dist .
 
 RUN npm config set registry http://mirrors.cloud.tencent.com/npm/
