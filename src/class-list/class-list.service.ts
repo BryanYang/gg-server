@@ -67,8 +67,11 @@ export class ClassListService {
       const salt = bcrypt.genSaltSync(10);
       _data.password = await bcrypt.hash(data.password, salt);
     }
-    if (await this.userModel.findOne({ where: { email: _data.email } })) {
-      return null;
+    const oldUser = await this.userModel.findOne({
+      where: { email: _data.email },
+    });
+    if (oldUser) {
+      await oldUser.destroy();
     }
     const it = await this.userModel.create(_data);
     return it;
