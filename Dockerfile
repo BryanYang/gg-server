@@ -11,6 +11,8 @@ COPY yarn.lock ./
 
 # 复制项目文件到工作目录
 COPY ./dist .
+COPY ./migrations ./migrations
+COPY ./config ./config
 
 RUN npm config set registry http://mirrors.cloud.tencent.com/npm/
 # 安装项目依赖
@@ -20,4 +22,4 @@ RUN npm install -g pm2
 EXPOSE 3000
 
 # 启动应用程序
-CMD ["sh", "-c", "yarn install && yarn migrate && pm2-runtime start main.js --name gg-server"]
+CMD ["sh", "-c", "yarn install && npx sequelize-cli db:migrate && pm2-runtime start main.js --name gg-server"]

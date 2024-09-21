@@ -61,14 +61,14 @@ $ yarn run test:cov
 ## 数据库变化
 
 ```
-npx sequelize-cli migration:generate --name add-new-column-to-table-A --migrations-path src/migrations
+npx sequelize-cli migration:generate --name add-new-column-to-table-A
 ```
 
 然后编辑
 最后运行
 
 ```
-npx sequelize-cli db:migrate --migrations-path src/migrations --config src/config
+npx sequelize-cli db:migrate
 ```
 
 ## Support
@@ -84,3 +84,17 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+后端部署
+
+本地 push 后
+
+- [ ] 服务端 pull
+- [ ] 执行 yarn build
+- [ ] docker build -t gg-server-app:latest .
+- [ ] docker compose down
+- [ ] Docker compose up -d
+
+其他命令，查看 images
+yarn
+docker rim [image id]
