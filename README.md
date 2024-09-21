@@ -61,14 +61,14 @@ $ yarn run test:cov
 ## 数据库变化
 
 ```
-npx sequelize-cli migration:generate --name add-new-column-to-table-A
+npx sequelize-cli migration:generate --name add-new-column-to-table-A --migrations-path src/migrations
 ```
 
 然后编辑
 最后运行
 
 ```
-npx sequelize-cli db:migrate
+npx sequelize-cli db:migrate --migrations-path src/migrations --config src/config
 ```
 
 ## Support
