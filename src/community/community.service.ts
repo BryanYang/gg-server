@@ -5,6 +5,7 @@ import { Post } from 'src/models/post';
 import { Comment } from 'src/models/comment';
 import { StarLike } from 'src/models/star-like';
 import { Op } from 'sequelize';
+import { User } from 'src/models/user';
 
 @Injectable()
 export class CommunityService {
@@ -237,6 +238,18 @@ export class CommunityService {
     }
   }
 
+  async commentList(ids: number[]): Promise<Comment[]> {
+    return await this.commentModel.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ['username', 'email', 'class'],
+        },
+      ],
+      where: { id: ids, isDeleted: null },
+    });
+  }
+
   async comment(data: Partial<Comment>): Promise<void> {
     await this.commentModel.create(data);
   }
@@ -244,7 +257,7 @@ export class CommunityService {
   async delComment(id: number, userID: number): Promise<void> {
     await this.commentModel.destroy({
       where: {
-        postID: id,
+        id,
         userID,
       },
     });

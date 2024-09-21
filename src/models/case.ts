@@ -1,8 +1,17 @@
-import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasMany,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { Exercise } from './exercise';
 import { CaseStudy } from './case-study';
 import { DataTypes } from 'sequelize';
 import { Institution } from './institution';
+import { User } from './user';
 
 @Table({ tableName: 'cases' })
 export class Case extends Model<Case> {
@@ -30,6 +39,17 @@ export class Case extends Model<Case> {
     allowNull: true,
   })
   pic: string;
+
+  @ForeignKey(() => User)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+    field: 'user_id',
+  })
+  userID: number;
+
+  @BelongsTo(() => User, 'user_id')
+  user: User;
 
   @Column({
     type: DataType.STRING,

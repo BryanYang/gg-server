@@ -73,4 +73,14 @@ export class CaseStudy extends Model<CaseStudy> {
     allowNull: true,
   })
   reportID: number;
+
+  /**
+   * 给case 的打分，满分5
+   */
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+    field: 'case_rate',
+  })
+  caseRate: number;
 }

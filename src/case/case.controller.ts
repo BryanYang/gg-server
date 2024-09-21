@@ -7,6 +7,7 @@ import {
   Body,
   Request,
   Delete,
+  Post,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Case } from 'src/models/case';
@@ -32,9 +33,18 @@ export class CaseController {
     return this.caseService.find(params.id);
   }
 
+  @Post(':id/rate')
+  async rateCase(
+    @Param('id') id: number,
+    @Body() data: { score: number },
+    @Request() req,
+  ): Promise<void> {
+    this.caseService.rateCase(id, data.score, req.user);
+  }
+
   @Get(':caseID/study/:userID')
   async getStudy(
-    @Param() params: { caseID: number; userID: number },
+    @Param() params: { caseID: number; userID: number; id: number },
   ): Promise<CaseStudy> {
     return this.caseService.findStudy(params);
   }
@@ -101,5 +111,17 @@ export class CaseController {
   @Get('study/list')
   async getStudies(@Request() req): Promise<CaseStudy[]> {
     return this.caseService.getStudies(req.user.id);
+  }
+
+  @Get('study/:studyID/all')
+  async getAllStudies(
+    @Param() params: { studyID: number },
+  ): Promise<CaseStudy[]> {
+    return this.caseService.getAllStudies(params.studyID);
+  }
+
+  @Get('study/list/:id')
+  async getStudyByID(@Param() params: { id: number }): Promise<CaseStudy> {
+    return this.caseService.findStudyByID(params.id);
   }
 }

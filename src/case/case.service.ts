@@ -1,17 +1,17 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { difference } from 'lodash';
 import * as moment from 'moment';
-import { Case } from 'src/models/case';
+import { Case } from '../models/case';
 import { Exercise } from '../models/exercise';
 import { ExerciseOption } from '../models/exercise-option';
 import { Institution } from '../models/institution';
 import { CaseStudy } from '../models/case-study';
-import { UserAnswer } from 'src/models/user-answer';
+import { UserAnswer } from '../models/user-answer';
 import { map, omit } from 'lodash';
-import { User } from 'src/models/user';
-import { Post } from 'src/models/post';
-import { adminEmail } from 'src/utils/user';
+import { User } from '../models/user';
+import { Post } from '../models/post';
+import { adminEmail } from '../utils/user';
 
 @Injectable()
 export class CaseService {
@@ -47,6 +47,14 @@ export class CaseService {
         },
         {
           model: Institution,
+        },
+        {
+          model: User,
+          attributes: ['id', 'username'],
+        },
+        {
+          model: CaseStudy,
+          attributes: ['id', 'caseRate', 'userID'],
         },
       ],
     });
@@ -131,6 +139,29 @@ export class CaseService {
     });
   }
 
+  async findStudyByID(id: number): Promise<CaseStudy | null> {
+    return this.caseStudyModel.findOne({
+      where: {
+        id,
+      },
+      include: [Case, User],
+    });
+  }
+
+  async rateCase(caseID: number, score: number, user: User): Promise<void> {
+    const study = await this.caseStudyModel.findOne({
+      where: {
+        userID: user.id,
+        caseID,
+      },
+    });
+    if (study) {
+      study.update({
+        caseRate: score,
+      });
+    }
+  }
+
   async updateStudy(data: Partial<CaseStudy>, user: User): Promise<CaseStudy> {
     const study = await this.caseStudyModel.findByPk(data.id, {
       include: [User, Case],
@@ -193,7 +224,12 @@ export class CaseService {
       where: {
         caseStudyID: studyId,
       },
-      include: [Exercise],
+      include: [
+        {
+          model: Exercise,
+          include: [ExerciseOption],
+        },
+      ],
     });
   }
 
@@ -202,7 +238,31 @@ export class CaseService {
       where: {
         userID,
       },
-      include: [Case],
+      include: [
+        {
+          model: Case,
+          include: [
+            {
+              model: CaseStudy,
+              attributes: ['id'],
+            },
+          ],
+        },
+      ],
+    });
+  }
+
+  async getAllStudies(caseID: number): Promise<CaseStudy[]> {
+    return this.caseStudyModel.findAll({
+      where: {
+        caseID,
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['username', 'class'],
+        },
+      ],
     });
   }
 

@@ -48,6 +48,11 @@ export class CommunityController {
     return this.postService.retrieveStarLike(userID);
   }
 
+  @Get('comments')
+  async list(@Query('ids') ids: number[]): Promise<Comment[]> {
+    return this.postService.commentList(ids);
+  }
+
   @Put('posts')
   async createPosts(
     @Body() data: Partial<PostEntity>,
@@ -95,18 +100,21 @@ export class CommunityController {
   async comment(
     @Body() data: Partial<Comment>,
     @Request() request,
-    @Param() id: number,
+    @Param() params: { id: number },
   ): Promise<void> {
     await this.postService.comment({
       ...data,
-      postID: id,
+      postID: params.id,
       userID: request.user.id,
     });
   }
 
   @Delete('comment/:id')
-  async delComment(@Param() id: number, @Request() request): Promise<void> {
+  async delComment(
+    @Param() params: { id: number },
+    @Request() request,
+  ): Promise<void> {
     const userID = request.user.id;
-    await this.postService.delComment(id, userID);
+    await this.postService.delComment(params.id, userID);
   }
 }
