@@ -58,6 +58,19 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
+## 数据库变化
+
+```
+npx sequelize-cli migration:generate --name add-new-column-to-table-A
+```
+
+然后编辑
+最后运行
+
+```
+npx sequelize-cli db:migrate
+```
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
