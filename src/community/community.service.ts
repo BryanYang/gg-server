@@ -246,7 +246,7 @@ export class CommunityService {
           attributes: ['username', 'email', 'class'],
         },
       ],
-      where: { id: ids, isDeleted: null },
+      where: { postID: ids, isDeleted: null },
     });
   }
 
