@@ -20,4 +20,4 @@ RUN npm install -g pm2
 EXPOSE 3000
 
 # 启动应用程序
-CMD ["sh", "-c", "yarn install && pm2-runtime start main.js --name gg-server"]
+CMD ["sh", "-c", "yarn install && yarn migrate && pm2-runtime start main.js --name gg-server"]
