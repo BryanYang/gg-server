@@ -8,6 +8,8 @@ import {
   Request,
   Delete,
   Post,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Case } from 'src/models/case';
@@ -17,6 +19,10 @@ import { UserAnswer } from 'src/models/user-answer';
 import { Institution } from 'src/models/institution';
 import { Exercise } from 'src/models/exercise';
 import { ExerciseOption } from 'src/models/exercise-option';
+import { omit, get } from 'lodash';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { join } from 'path';
 
 @Controller('cases')
 @UseGuards(AuthGuard)
@@ -57,9 +63,33 @@ export class CaseController {
     return this.caseService.updateStudy(data, req.user);
   }
 
-  @Put()
-  async create(@Body() data: Partial<Case>): Promise<Case | null> {
-    return this.caseService.create(data);
+  @Post()
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        // 设置文件存储路径，假设这里为临时缓存目录
+        destination: join(__dirname, '../../cache/uploads'),
+        // 定义文件名，避免重复
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const originalName = file.originalname.replace(/\s+/g, '-'); // 去除空格
+          const fileExt = originalName.split('.').pop(); // 获取文件扩展名
+          const newFileName = `${uniqueSuffix}.${fileExt}`;
+          callback(null, newFileName);
+        },
+      }),
+    }),
+  )
+  async create(
+    @UploadedFile() file: Express.Multer.File, // 获取上传的文件
+    @Body() data: Partial<Case>,
+  ): Promise<Case | null> {
+    return this.caseService.create({
+      ...data,
+      types: get(data, 'types', '').split(','),
+      pic: '/uploads/' + file.filename,
+    });
   }
 
   @Put('institutions')

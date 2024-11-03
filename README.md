@@ -93,7 +93,7 @@ Nest is [MIT licensed](LICENSE).
 - [ ] 执行 yarn build
 - [ ] docker build -t gg-server-app:latest .
 - [ ] docker compose down
-- [ ] Docker compose up -d
+- [ ] docker compose up -d
 
 其他命令，查看 images
 yarn

@@ -9,9 +9,15 @@ import { CaseModule } from './case/case.module';
 import { MessageModule } from './message/message.module';
 import { ClassListModule } from './class-list/class-list.module';
 import { CommunityModule } from './community/community.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'cache/uploads'),
+      serveRoot: '/uploads', // 指定文件访问的 URL 前缀
+    }),
     SequelizeModule.forRoot({
       uri: databaseConfig.uri,
       autoLoadModels: true, // 自动加载模型
