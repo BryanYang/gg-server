@@ -23,6 +23,8 @@ import { omit, get } from 'lodash';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { join } from 'path';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { Roles } from 'src/roles/roles.decorator';
 
 @Controller('cases')
 @UseGuards(AuthGuard)
@@ -141,6 +143,15 @@ export class CaseController {
   @Get('study/list')
   async getStudies(@Request() req): Promise<CaseStudy[]> {
     return this.caseService.getStudies(req.user.id);
+  }
+
+  @Get('study/user/:id/list')
+  @UseGuards(RolesGuard)
+  @Roles('teacher')
+  async getStudiesByUserID(
+    @Param() params: { id: number },
+  ): Promise<CaseStudy[]> {
+    return this.caseService.getStudies(params.id);
   }
 
   @Get('study/:studyID/all')

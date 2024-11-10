@@ -90,6 +90,7 @@ Nest is [MIT licensed](LICENSE).
 本地 push 后
 
 - [ ] 服务端 pull
+- [ ] 执行 yarn
 - [ ] 执行 yarn build
 - [ ] docker build -t gg-server-app:latest .
 - [ ] docker compose down

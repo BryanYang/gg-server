@@ -15,6 +15,7 @@ COPY ./migrations ./migrations
 COPY ./config ./config
 
 RUN npm config set registry http://mirrors.cloud.tencent.com/npm/
+RUN yarn config set registry http://mirrors.cloud.tencent.com/npm/
 # 安装项目依赖
 RUN npm install -g pm2
 
