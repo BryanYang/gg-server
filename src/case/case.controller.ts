@@ -89,8 +89,10 @@ export class CaseController {
   ): Promise<Case | null> {
     return this.caseService.create({
       ...data,
-      types: get(data, 'types', '').split(','),
-      pic: '/uploads/' + file.filename,
+      types: Array.isArray(get(data, 'types', ''))
+        ? get(data, 'types', '')
+        : get(data, 'types', '').split(','),
+      pic: file ? '/uploads/' + file.filename : undefined,
     });
   }
 
