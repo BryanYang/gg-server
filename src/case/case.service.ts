@@ -61,6 +61,7 @@ export class CaseService {
   }
 
   async create(data: Partial<Case>): Promise<Case | null> {
+    console.log(data.id);
     if (data.id) {
       const it = await this.caseModel.findByPk(data.id);
       return await it.update(data);

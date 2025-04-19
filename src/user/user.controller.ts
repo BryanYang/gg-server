@@ -74,4 +74,16 @@ export class UserController {
   async create(@Body() updateData: Partial<User>): Promise<UserDto | null> {
     return this.userService.create(updateData);
   }
+
+  @Post()
+  @UseGuards(RolesGuard)
+  @Roles('teacher')
+  async createBatch(@Body() updateData: Array<Partial<User>>): Promise<number> {
+    let count = 0;
+    for (const user of updateData) {
+      await this.userService.create(user);
+      count += 1;
+    }
+    return count;
+  }
 }

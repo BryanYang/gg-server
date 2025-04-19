@@ -16,6 +16,8 @@ COPY ./config ./config
 
 RUN npm config set registry http://mirrors.tencent.com/npm/
 RUN yarn config set registry http://mirrors.tencent.com/npm/
+RUN npm config set strict-ssl false
+RUN yarn config set strict-ssl false
 # 安装项目依赖
 RUN npm install -g pm2
 

@@ -57,6 +57,19 @@ export class ClassListController {
     return this.classListService.createUser(id, data);
   }
 
+  @Put(':id/users')
+  async createUsers(
+    @Param('id') id: string,
+    @Body() data: Array<Partial<User>>,
+  ): Promise<number> {
+    let count = 0;
+    for (const user of data) {
+      await this.classListService.createUser(id, user);
+      count++;
+    }
+    return count;
+  }
+
   @Post(':id/user')
   async updateUser(
     @Param('id') id: string,
